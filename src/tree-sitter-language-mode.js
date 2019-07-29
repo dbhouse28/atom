@@ -972,7 +972,7 @@ class HighlightIterator {
 
     // Sort the iterators so that the last one in the array is the earliest
     // in the document, and represents the current position.
-    this.iterators.sort((a, b) => b.compare(a));
+    this.iterators.sort((a, b) => a.compare(b));
 
     return containingTags;
   }
@@ -987,7 +987,7 @@ class HighlightIterator {
     if (leader.moveToSuccessor()) {
       const leaderIndex = this.iterators.length - 1;
       let i = leaderIndex;
-      while (i > 0 && this.iterators[i - 1].compare(leader) < 0) i--;
+      while (i > 0 && leader.compare(this.iterators[i - 1]) < 0) i--;
       if (i < leaderIndex) {
         this.iterators.splice(i, 0, this.iterators.pop());
       }
@@ -1188,11 +1188,11 @@ class LayerHighlightIterator {
   }
 
   compare(other) {
-    const result = this.offset - other.offset;
+    const result = other.offset - this.offset;
     if (result !== 0) return result;
-    if (this.atEnd && !other.atEnd) return -1;
-    if (other.atEnd && !this.atEnd) return 1;
-    return other.languageLayer.depth - this.languageLayer.depth;
+    if (this.atEnd && !other.atEnd) return 1;
+    if (other.atEnd && !this.atEnd) return -1;
+    return this.languageLayer.depth - other.languageLayer.depth;
   }
 
   getCloseScopeIds() {
@@ -1313,7 +1313,7 @@ class NullHighlightIterator {
     return [];
   }
   compare() {
-    return 1;
+    return -1;
   }
   moveToSuccessor() {}
   getPosition() {
